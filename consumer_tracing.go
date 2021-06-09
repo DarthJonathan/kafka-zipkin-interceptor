@@ -1,14 +1,13 @@
 package kafka_zipkin_interceptor
 
 import (
-	"context"
 	"github.com/openzipkin/zipkin-go"
 	"github.com/openzipkin/zipkin-go/model"
 	"github.com/segmentio/kafka-go"
 	"strconv"
 )
 
-func ExtractTraceInfo(ctx context.Context, m kafka.Message, key string, topic string, clientId string, groupId string, t *zipkin.Tracer) context.Context {
+func ExtractTraceInfo(m kafka.Message, key string, topic string, clientId string, groupId string, t *zipkin.Tracer) zipkin.Span {
 	traceId := ""
 	spanId := ""
 
@@ -35,8 +34,7 @@ func ExtractTraceInfo(ctx context.Context, m kafka.Message, key string, topic st
 		KAFKA_GROUP_ID: groupId,
 	}
 
-	span, ctx := t.StartSpanFromContext(
-		ctx,
+	span := t.StartSpan(
 		SPAN_NAME_POLL,
 		zipkin.RemoteEndpoint(&model.Endpoint{ServiceName: REMOTE_SERVICE_NAME_DEFAULT}),
 		zipkin.Tags(tags),
@@ -44,6 +42,5 @@ func ExtractTraceInfo(ctx context.Context, m kafka.Message, key string, topic st
 		zipkin.Parent(spanContext),
 	)
 
-	defer span.Finish()
-	return ctx
+	return span
 }
