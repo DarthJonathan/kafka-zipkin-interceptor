@@ -13,7 +13,8 @@ var (
 	KAFKA_KEY = "kafka.key"
 	KAFKA_CLIENT_ID = "kafka.client.id"
 	KAFKA_GROUP_ID = "kafka.group.id"
-	SPAN_NAME = "send"
+	SPAN_NAME_SEND = "send"
+	SPAN_NAME_POLL = "poll"
 )
 
 func WrapInSpan(key string, topic string, clientId string, groupId string, ctx context.Context, t *zipkin.Tracer) ([]kafka.Header, context.Context) {
@@ -26,7 +27,7 @@ func WrapInSpan(key string, topic string, clientId string, groupId string, ctx c
 
 	span, ctx := t.StartSpanFromContext(
 			ctx,
-			SPAN_NAME,
+			SPAN_NAME_SEND,
 			zipkin.RemoteEndpoint(&model.Endpoint{ServiceName: REMOTE_SERVICE_NAME_DEFAULT}),
 			zipkin.Tags(tags),
 			zipkin.Kind(model.Producer),

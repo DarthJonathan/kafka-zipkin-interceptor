@@ -37,7 +37,7 @@ func ExtractTraceInfo(ctx context.Context, m kafka.Message, key string, topic st
 
 	span, ctx := t.StartSpanFromContext(
 		ctx,
-		SPAN_NAME,
+		SPAN_NAME_POLL,
 		zipkin.RemoteEndpoint(&model.Endpoint{ServiceName: REMOTE_SERVICE_NAME_DEFAULT}),
 		zipkin.Tags(tags),
 		zipkin.Kind(model.Consumer),
