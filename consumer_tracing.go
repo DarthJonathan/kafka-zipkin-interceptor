@@ -1,6 +1,7 @@
 package kafka_zipkin_interceptor
 
 import (
+	"fmt"
 	"github.com/openzipkin/zipkin-go"
 	"github.com/openzipkin/zipkin-go/model"
 	"github.com/segmentio/kafka-go"
@@ -18,6 +19,8 @@ func ExtractTraceInfo(m kafka.Message, key string, topic string, clientId string
 			spanId = string(header.Value)
 		}
 	}
+
+	fmt.Printf("Extracted trace and span id : [%s] [%s]", traceId, spanId)
 
 	unitSpanId, _ := strconv.ParseUint(spanId, 0, 64)
 	traceIdModel, _ := model.TraceIDFromHex(traceId)
